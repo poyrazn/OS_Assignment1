@@ -58,7 +58,7 @@ int part1(){
     }
     printf("(part1)\tShared memory segment has been opened.\n");
     ftruncate(shm_fd,SIZE);
-    printf("Enter an integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
+    printf("\t\tEnter an integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
     scanf("%d", &number);
     pid = fork();
     if (pid < 0) {
