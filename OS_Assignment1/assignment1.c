@@ -64,7 +64,7 @@ int part1(){
     }
     printf("(part1)\tShared memory segment has been opened.\n");
     ftruncate(shm_fd,SIZE);
-    
+    printf("\t\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
     printf("\t\tEnter a positive integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
     scanf("%d", &number);
     pid = fork();
@@ -176,8 +176,9 @@ void printStat(int partnum, int processnum, int mode) {
             else
                 printf("\n(part%d)\t---\tChild process is executing...\n", partnum);
         }
-        else
+        else {
             printf("(part%d)\tChild is done.\n(part%d)\tThe sequence can be read from the shared memory.\n", partnum, partnum);
+        }
     }
     else {
         if (mode == receiver)
