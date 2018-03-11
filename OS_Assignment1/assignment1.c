@@ -25,21 +25,21 @@ int pipe_fd2[2];
 pid_t pid;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    
+    /* In this assignment, I have defined seperate functions for both parts. Using fork system call, child process will execute part1 while parent waits for it to terminate. Then, parent continue to executing, executes part2 */
     pid = fork();
     
     if (pid < 0 )
+//         Child (executes part 1)
         perror("(main)\tFork failed");
     else if (pid == 0){
-        printf("\n\t***\tExecuting first part of the Assignment1\t***\t\n\n");
-        
+        fprintf(stderr,"\n\t***\tExecuting first part of the Assignment1\t***\t\n\n");
         part1();
     }
     else {
+//         Parent waits for the child
         wait(NULL);
-        printf("\n\n");
-        printf("\t***\tExecuting second part of the first Assignment1\t***\t\n\n");
+        fprintf(stderr, "\n\t***\tExecuting second part of the first Assignment1\t***\t\n\n");
+        
         part2();
     }
     
@@ -47,6 +47,7 @@ int main(int argc, const char * argv[]) {
 }
 
 int part1(){
+//     Establishing the shared memory object
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
     if (shm_fd == -1) {
         printf("(part1)\tShared memory failed\n");
@@ -56,22 +57,26 @@ int part1(){
     ftruncate(shm_fd,SIZE);
     pid = fork();
     if (pid < 0) {
-        // Error forking
+//         Error forking
         perror("(part1)\tFork failed");
     } else if (pid == 0) {
-        // Child process
+//         Child process
         printf("\n(part1)\t---\tChild process is executing...\n");
+//         mapping for write
         ptr = mmap(0,SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (ptr == MAP_FAILED) {
             printf("(part1)\tChild Map failed\n");
             return -1;
         }
+        
         Collatz(number);
         printf("(part1)\tChild is done.\n(part1)\tThe sequence can be read from the shared memory.\n");
     }  else {
-        // Parent process
+//         Parent process waits
         wait(NULL);
+//         Child terminates, parent continues
         printf("\n(part1)\t---\tParent process is executing...\n");
+//         mapping for read
         ptr = mmap(0,SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
         if (ptr == MAP_FAILED) {
             printf("(part1)\tParent Map failed\n");
@@ -86,13 +91,12 @@ int part2() {
     char write_msg[SIZE] = "TRYInG SOMeThiNG DIFFErENT";
     char *write_msg2;
     char read_msg[SIZE];
-    
     if (pipe(pipe_fd) == -1) {
-        fprintf(stderr,"Pipe failed");
+        fprintf(stderr,"Pipe1 failed");
         return 1;
     }
     if (pipe(pipe_fd2) == -1) {
-        fprintf(stderr,"Pipe failed");
+        fprintf(stderr,"Pipe2 failed");
         return 1;
     }
     pid = fork();
@@ -100,45 +104,55 @@ int part2() {
         perror("(part2)\tFork failed");
     else if (pid == 0)
     {
-        
+//         Process 2
+//         close unused ends of the pipes
         close(pipe_fd[1]);
         close(pipe_fd2[0]);
-        /*read the message from the pipe*/
+//         read the original message from the pipe1
         read(pipe_fd[0], read_msg, SIZE);
+//         close the read end of the pipe1
         close(pipe_fd[0]);
         printf("(part2)\tProcess 2 has received the message from the pipe:\n");
         printf("\noriginal message:\t%s\n\n", read_msg);
-        /*Alter the message*/
+//         Alter the message
         write_msg2 = toggleCase(read_msg);
-        /* write to the pipe */
+//          write the altered message to the pipe2
         write(pipe_fd2[1], write_msg2, strlen(write_msg2)+1);
         printf("(part2)\tProcess 2 has written the message to the pipe\n");
-        /* close the write end of the pipe */
+//         close the write end of the pipe2
         close(pipe_fd2[1]);
         
     }
     else
     {
-        // Parent
+//         Process 1
+//         close unused ends of the pipes
         close(pipe_fd[0]);
         close(pipe_fd2[1]);
-        /* write the original message to the pipe */
+//         write the original message to the pipe1
         write(pipe_fd[1], write_msg, strlen(write_msg)+1);
+//         close the write end of the pipe1
         close(pipe_fd[1]);
         printf("(part2)\tProcess 1 has written the message to the pipe\n");
         wait(NULL);
+//         read the altered message from the pipe2
         read(pipe_fd2[0], read_msg, SIZE);
         printf("(part2)\tProcess 1 has received the message from the pipe:\n");
         printf("\naltered message:\t%s\n\n", read_msg);
+//         close the read end of the pipe2
         close(pipe_fd2[0]);
     }
     return 0;
 }
 
 void Collatz(int n) {
+//     this function both computes the elements of the sequence and pushes to the shared memory recursively
+//      local buffer holds the integer value as char array
     char buffer [10];
     sprintf(buffer, "%d", n);
+//     buffer to shm
     sprintf(ptr, "%s", buffer);
+//     increase: buffer len
     ptr += strlen(buffer);
     if (n == 1) {
         return;
@@ -154,6 +168,7 @@ void Collatz(int n) {
     }
 }
 char* toggleCase(char *msg){
+//     allocating memory to hold the msg
     char *str = malloc(strlen(msg) +1);
     int i = 0;
     while(msg[i] != '\0') {
