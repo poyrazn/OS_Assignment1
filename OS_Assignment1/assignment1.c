@@ -64,7 +64,6 @@ int part1(){
     }
     printf("(part1)\tShared memory segment has been opened.\n\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
     ftruncate(shm_fd,SIZE);
-//    printf("\t\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
     
     pid = fork();
     if (pid < 0) {
@@ -96,6 +95,11 @@ int part1(){
         }
         printf("(part1)\t\tCollatz sequence for the number %d is:\n", number);
         printf("\t\t%s\n",ptr);
+        if (shm_unlink(name) == -1) {
+            printf("Error removing %s\n",name);
+            exit(-1);
+        }
+        printf("(part1)\tShared memory segment removed.\n");
     }
     return 0;
 }
