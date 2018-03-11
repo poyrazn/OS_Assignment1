@@ -94,7 +94,7 @@ int part1(){
             printf("(part1)\tParent Map failed\n");
             exit(-1);
         }
-        printf("(part1)\tCollatz sequence for the number %d is:\n", number);
+        printf("(part1)\t\tCollatz sequence for the number %d is:\n", number);
         printf("\t\t%s\n",ptr);
     }
     return 0;

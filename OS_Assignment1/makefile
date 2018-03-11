@@ -16,10 +16,10 @@ Assignment1: $(OBJ)
 ifeq ($(OS), Linux)
 	gcc -o $@ $^ $(CFLAGS) $(LFLAG)
 else
-	$(CC) -c -o $@ $< $(CFLAGS)
+	gcc -o $@ $^ $(CFLAGS)
 endif
 
 .PHONY: clean
 
 clean:
-	rm -f *.o
+	rm -f *.o *~ core *~
