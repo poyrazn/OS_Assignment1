@@ -37,14 +37,14 @@ int main(int argc, const char * argv[]) {
     pid = fork();
     
     if (pid < 0 )
-//         Child (executes part 1)
+//      Child (executes part 1)
         perror("(main)\tFork failed");
     else if (pid == 0){
         fprintf(stderr,"\n\t***\tExecuting first part of the Assignment1\t***\t\n\n");
         part1();
     }
     else {
-//         Parent waits for the child
+//      Parent waits for the child
         wait(NULL);
         fprintf(stderr, "\n\t***\tExecuting second part of the first Assignment1\t***\t\n\n");
         
@@ -55,7 +55,7 @@ int main(int argc, const char * argv[]) {
 }
 
 int part1(){
-    int number;
+    int number = 0;
 //     Establishing the shared memory object
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
     if (shm_fd == -1) {
@@ -65,8 +65,7 @@ int part1(){
     printf("(part1)\tShared memory segment has been opened.\n");
     ftruncate(shm_fd,SIZE);
     printf("\t\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
-    printf("\t\tEnter a positive integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
-    scanf("%d", &number);
+    
     pid = fork();
     if (pid < 0) {
 //         Error forking
@@ -80,6 +79,8 @@ int part1(){
             printf("(part1)\tChild Map failed\n");
             return -1;
         }
+        printf("\t\tEnter a positive integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
+        scanf("%d", &number);
         Collatz(number);
         printStat(1, 2, done);
     }  else {
