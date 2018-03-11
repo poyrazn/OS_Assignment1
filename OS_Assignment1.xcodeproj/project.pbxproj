@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		846708872055A414005FD9A4 /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 846708862055A413005FD9A4 /* makefile */; };
 		84DA70612050ADA7006C688A /* assignment1.c in Sources */ = {isa = PBXBuildFile; fileRef = 84DA70602050ADA7006C688A /* assignment1.c */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		842F3D04205487CB00C105F0 /* assignment1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = assignment1.h; sourceTree = "<group>"; };
+		846708862055A413005FD9A4 /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; usesTabs = 1; };
 		84DA705D2050ADA7006C688A /* OS_Assignment1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OS_Assignment1; sourceTree = BUILT_PRODUCTS_DIR; };
 		84DA70602050ADA7006C688A /* assignment1.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = assignment1.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +60,7 @@
 		84DA705F2050ADA7006C688A /* OS_Assignment1 */ = {
 			isa = PBXGroup;
 			children = (
+				846708862055A413005FD9A4 /* makefile */,
 				84DA70602050ADA7006C688A /* assignment1.c */,
 				842F3D04205487CB00C105F0 /* assignment1.h */,
 			);
@@ -121,6 +124,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				846708872055A414005FD9A4 /* makefile in Sources */,
 				84DA70612050ADA7006C688A /* assignment1.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
