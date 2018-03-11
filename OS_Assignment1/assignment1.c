@@ -16,7 +16,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #define SIZE 2048
-#define number 35
+
 void *ptr;
 const char *name = "OS";
 int shm_fd;
@@ -47,6 +47,7 @@ int main(int argc, const char * argv[]) {
 }
 
 int part1(){
+    int number;
 //     Establishing the shared memory object
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
     if (shm_fd == -1) {
@@ -55,6 +56,8 @@ int part1(){
     }
     printf("(part1)\tShared memory segment has been opened.\n");
     ftruncate(shm_fd,SIZE);
+    printf("Enter an integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
+    scanf("%d", &number);
     pid = fork();
     if (pid < 0) {
 //         Error forking
@@ -68,7 +71,6 @@ int part1(){
             printf("(part1)\tChild Map failed\n");
             return -1;
         }
-        
         Collatz(number);
         printf("(part1)\tChild is done.\n(part1)\tThe sequence can be read from the shared memory.\n");
     }  else {
@@ -88,7 +90,9 @@ int part1(){
     return 0;
 }
 int part2() {
-    char write_msg[SIZE] = "TRYInG SOMeThiNG DIFFErENT";
+//    char write_msg[SIZE] = "TRYInG SOMeThiNG DIFFErENT";
+    size_t buf = 0;
+    char *write_msg = NULL;
     char *write_msg2;
     char read_msg[SIZE];
     if (pipe(pipe_fd) == -1) {
@@ -99,6 +103,8 @@ int part2() {
         fprintf(stderr,"Pipe2 failed");
         return 1;
     }
+    printf("Type something. The letters of the message you have typed will be toggled and send through the pipe:\n");
+    getline(&write_msg, &buf, stdin);
     pid = fork();
     if (pid <0 )
         perror("(part2)\tFork failed");
