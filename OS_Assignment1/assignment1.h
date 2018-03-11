@@ -12,5 +12,6 @@ int part1(void);
 void Collatz(int n);
 int part2(void);
 char* toggleCase(char *msg);
+void printStat(int partnum, int processnum, int role);
 
 #endif /* assignment1_h */

@@ -16,8 +16,11 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #define bool int
-#define true 1
-#define false 0
+#define receiver 0
+#define sender 1
+#define done 0
+#define executing 1
+
 #define SIZE 2048
 
 void *ptr;
@@ -61,6 +64,7 @@ int part1(){
     }
     printf("(part1)\tShared memory segment has been opened.\n");
     ftruncate(shm_fd,SIZE);
+    
     printf("\t\tEnter a positive integer number to find its Collatz sequence. Is it really going to reach 1? Let's see!\n");
     scanf("%d", &number);
     pid = fork();
@@ -69,7 +73,7 @@ int part1(){
         perror("(part1)\tFork failed");
     } else if (pid == 0) {
 //         Child process
-        printf("\n(part1)\t---\tChild process is executing...\n");
+        printStat(1, 2, executing);
 //         mapping for write
         ptr = mmap(0,SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (ptr == MAP_FAILED) {
@@ -77,12 +81,12 @@ int part1(){
             return -1;
         }
         Collatz(number);
-        printf("(part1)\tChild is done.\n(part1)\tThe sequence can be read from the shared memory.\n");
+        printStat(1, 2, done);
     }  else {
 //         Parent process waits
         wait(NULL);
 //         Child terminates, parent continues
-        printf("\n(part1)\t---\tParent process is executing...\n");
+        printStat(1, 1, executing);
 //         mapping for read
         ptr = mmap(0,SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
         if (ptr == MAP_FAILED) {
@@ -95,7 +99,6 @@ int part1(){
     return 0;
 }
 int part2() {
-//    char write_msg[SIZE] = "TRYInG SOMeThiNG DIFFErENT";
     size_t buf = 0;
     char *write_msg2;
     char read_msg[SIZE];
@@ -123,13 +126,14 @@ int part2() {
         read(pipe_fd[0], read_msg, SIZE);
 //         close the read end of the pipe1
         close(pipe_fd[0]);
-        printf("(part2)\tProcess 2 has received the message from the pipe:\n");
-        printf("\noriginal message:\t%s\n\n", read_msg);
+        printStat(2, 2, receiver);
+        printf("%s\n", read_msg);
+
 //         Alter the message
         write_msg2 = toggleCase(read_msg);
 //          write the altered message to the pipe2
         write(pipe_fd2[1], write_msg2, strlen(write_msg2)+1);
-        printf("(part2)\tProcess 2 has written the message to the pipe\n");
+        printStat(2, 2, sender);
 //         close the write end of the pipe2
         close(pipe_fd2[1]);
         
@@ -141,23 +145,50 @@ int part2() {
 //         close unused ends of the pipes
         close(pipe_fd[0]);
         close(pipe_fd2[1]);
-        printf("Type something. The letters of the message you have typed will be toggled and send through the pipe:\n");
+        printf("(part2)\tProcess 1 is retrieving the input message...\n");
+        printf("Type anything. The letters of the message you have typed will be toggled and send through the pipe:\n");
         getline(&write_msg, &buf, stdin);
 //         write the original message to the pipe1
         write(pipe_fd[1], write_msg, strlen(write_msg)+1);
 //         close the write end of the pipe1
         close(pipe_fd[1]);
-        printf("(part2)\tProcess 1 has written the message to the pipe\n");
+        printStat(2, 1, sender);
         wait(NULL);
 //         read the altered message from the pipe2
         read(pipe_fd2[0], read_msg, SIZE);
-        printf("(part2)\tProcess 1 has received the message from the pipe:\n");
-        printf("\naltered message:\t%s\n\n", read_msg);
+        printStat(2, 1, receiver);
+        printf("%s\n", read_msg);
 //         close the read end of the pipe2
         close(pipe_fd2[0]);
     }
     return 0;
 }
+
+void printStat(int partnum, int processnum, int mode) {
+//      partnum: 1 for part1 & 2 for part2,
+//      processnum: 1 for Process1, (Parent), 2 for Process2 (Child)
+//      role: receiver (0) to read from pipe, sender (1) to write to the pipe
+//      role: executing: 1 done: 0
+    if (partnum == 1) {
+        if (mode == executing) {
+            if (processnum == 1)
+                printf("\n(part%d)\t---\tParent process is executing...\n", partnum);
+            else
+                printf("\n(part%d)\t---\tChild process is executing...\n", partnum);
+        }
+        else
+            printf("(part%d)\tChild is done.\n(part%d)\tThe sequence can be read from the shared memory.\n", partnum, partnum);
+    }
+    else {
+        if (mode == receiver)
+            printf("(part%d)\tProcess %d has received the message from the pipe: ", partnum, processnum);
+        else if (mode == sender)
+            printf("(part%d)\tProcess %d has written the message to the pipe\n", partnum, processnum);
+    }
+    
+}
+
+
 
 void Collatz(int n) {
 //     this function both computes the elements of the sequence and pushes to the shared memory recursively
