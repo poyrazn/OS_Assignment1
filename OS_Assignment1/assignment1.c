@@ -62,9 +62,9 @@ int part1(){
         printf("(part1)\tShared memory failed\n");
         exit(-1);
     }
-    printf("(part1)\tShared memory segment has been opened.\n");
+    printf("(part1)\tShared memory segment has been opened.\n\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
     ftruncate(shm_fd,SIZE);
-    printf("\t\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
+//    printf("\t\tThe Collatz conjecture states that when this algorithm continually applied, all positive integers will eventually reach 1.\n");
     
     pid = fork();
     if (pid < 0) {
