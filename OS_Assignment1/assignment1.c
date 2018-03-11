@@ -25,7 +25,9 @@ int pipe_fd2[2];
 pid_t pid;
 
 int main(int argc, const char * argv[]) {
-    /* In this assignment, I have defined seperate functions for both parts. Using fork system call, child process will execute part1 while parent waits for it to terminate. Then, parent continue to executing, executes part2 */
+    /* In this assignment, I have defined seperate functions for both parts. Using fork system call, 
+    child process will execute part1 while parent waits for it to terminate. Then, parent continue to executing, 
+    executes part2 */
     pid = fork();
     
     if (pid < 0 )
