@@ -15,6 +15,9 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#define bool int
+#define true 1
+#define false 0
 #define SIZE 2048
 
 void *ptr;
@@ -64,9 +67,9 @@ int part1(){
     if (pid < 0) {
 //         Error forking
         perror("(part1)\tFork failed");
-        } else if (pid == 0) {
+    } else if (pid == 0) {
 //         Child process
-    printf("\n(part1)\t---\tChild process is executing...\n");
+        printf("\n(part1)\t---\tChild process is executing...\n");
 //         mapping for write
         ptr = mmap(0,SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (ptr == MAP_FAILED) {
@@ -94,9 +97,9 @@ int part1(){
 int part2() {
 //    char write_msg[SIZE] = "TRYInG SOMeThiNG DIFFErENT";
     size_t buf = 0;
-    char *write_msg = NULL;
     char *write_msg2;
     char read_msg[SIZE];
+    
     if (pipe(pipe_fd) == -1) {
         fprintf(stderr,"Pipe1 failed");
         return 1;
@@ -105,8 +108,7 @@ int part2() {
         fprintf(stderr,"Pipe2 failed");
         return 1;
     }
-    printf("Type something. The letters of the message you have typed will be toggled and send through the pipe:\n");
-    getline(&write_msg, &buf, stdin);
+    
     pid = fork();
     if (pid <0 )
         perror("(part2)\tFork failed");
@@ -116,6 +118,7 @@ int part2() {
 //         close unused ends of the pipes
         close(pipe_fd[1]);
         close(pipe_fd2[0]);
+
 //         read the original message from the pipe1
         read(pipe_fd[0], read_msg, SIZE);
 //         close the read end of the pipe1
@@ -133,10 +136,13 @@ int part2() {
     }
     else
     {
+        char *write_msg = NULL;
 //         Process 1
 //         close unused ends of the pipes
         close(pipe_fd[0]);
         close(pipe_fd2[1]);
+        printf("Type something. The letters of the message you have typed will be toggled and send through the pipe:\n");
+        getline(&write_msg, &buf, stdin);
 //         write the original message to the pipe1
         write(pipe_fd[1], write_msg, strlen(write_msg)+1);
 //         close the write end of the pipe1
