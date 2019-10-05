@@ -31,23 +31,27 @@ int pipe_fd2[2];
 pid_t pid;
 
 int main(int argc, const char * argv[]) {
-    /* In this assignment, I have defined seperate functions for both parts. Using fork system call, 
-    child process will execute part1 while parent waits for it to terminate. Then, parent continue to executing, 
+    /* In this implementation, separate functions have been defined for both parts. Using fork system call, 
+    child process will execute part1 while parent waits for it to terminate. Then, parent continues executing, 
     executes part2 */
+    
+// Create child process
     pid = fork();
     
+    
     if (pid < 0 )
-//      Child (executes part 1)
+ // Child process couldn't be created succesfully
         perror("(main)\tFork failed");
     else if (pid == 0){
-        fprintf(stderr,"\n\t***\tExecuting first part of the Assignment1\t***\t\n\n");
+        fprintf(stderr,"\n\t***\tExecuting first part of the task\t***\t\n\n");
+// Success, child executes part 1
         part1();
     }
     else {
 //      Parent waits for the child
         wait(NULL);
-        fprintf(stderr, "\n\t***\tExecuting second part of the first Assignment1\t***\t\n\n");
-        
+        fprintf(stderr, "\n\t***\tExecuting second part of the task\t***\t\n\n");
+// Child terminates, parent executes part 2
         part2();
     }
     
