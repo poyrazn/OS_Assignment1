@@ -16,5 +16,5 @@ The goal is to manage IPC using shared memory, to achieve this two processes are
 
 ### Part 2 (Inverted Letter Cases)
 
-In this part, the goal is to manage IPC via pipes. Similarly, one process is given a string and writes it into a pipe and wait for reading, whereas the other process reads the message from the pipe, toggles its letters (e.g. a-->A or C-->c)and sends it back through the pipe. 
+In this part, the goal is to manage IPC via pipes. Similarly, one process is given a string and writes it into a pipe and wait for reading, whereas the other process reads the message from the pipe, toggles its letters (e.g. a-->A or C-->c)and sends it back through the pipe. For the purposes of this project, two bidirectional pipes have been used. (One for each processes)
 
