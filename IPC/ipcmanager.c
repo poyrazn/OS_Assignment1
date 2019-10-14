@@ -1,12 +1,12 @@
 //
-//  ipc.c
+//  ipcmanager.c
 //  Inter Process Communication (IPC)
 //
 //  Created by Nehir Poyraz on 8.03.2018.
 //  Copyright © 2018 Nehir Poyraz. All rights reserved.
 //
 
-#include "ipc.h"
+#include "ipcmanager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
