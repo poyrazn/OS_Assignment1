@@ -2,8 +2,8 @@ CC=gcc
 CFLAGS=-I.
 LFLAG=-lrt
 OS := $(shell uname)
-DEPS = ipc.h
-OBJ = ipc.o
+DEPS = ipcmanager.h
+OBJ = ipcmanager.o
 
 %.o: %.c $(DEPS)
 ifeq ($(OS), Linux)
